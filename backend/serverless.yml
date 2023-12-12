@@ -1,0 +1,41 @@
+service: serverless-registration-backend
+
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  architecture: arm64
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'ap-southeast-1'}
+  logRetentionInDays: ${self:custom.logRetentionInDays.${sls:stage}, 7}
+  environment:
+    REGISTRATION_TABLE: sls-registration-table
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action: "dynamodb:*"
+          Resource: "*"
+
+custom:
+  prune:
+    automatic: true
+    number: 3
+  logRetentionInDays:
+    dev: 7
+    staging: 30
+    uat: 30
+    prod: 90
+
+plugins:
+  - serverless-offline
+  - serverless-prune-plugin
+  - serverless-plugin-common-excludes
+  - serverless-plugin-include-dependencies
+  - serverless-plugin-scripts
+
+#Importing resources from external yml can keep things cleaner
+resources:
+  - ${file(resources/dynamodb.yml)}
+  - ${file(resources/functions.yml)}

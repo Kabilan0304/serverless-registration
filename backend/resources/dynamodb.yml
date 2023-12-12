@@ -1,0 +1,22 @@
+Resources:
+  RegistrationTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ${self:provider.environment.REGISTRATION_TABLE}
+      BillingMode: PROVISIONED
+      AttributeDefinitions:
+        - AttributeName: _pk
+          AttributeType: S
+        - AttributeName: _s
+          AttributeType: S
+      KeySchema:
+        - AttributeName: _pk
+          KeyType: HASH
+        - AttributeName: _s
+          KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      Tags:
+        - Key: Owner
+          Value: ${self:service}-${sls:stage}

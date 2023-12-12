@@ -1,0 +1,22 @@
+CreateRegistration:
+  handler: src/handler/create.lambdaHandler
+  timeout: 30
+  memorySize: 128
+  reservedConcurrency: 5
+  tags:
+    CreatedBy: "shashenta.rao@maybank.com"
+    Description: POST Registration
+    ServiceName: ${self:service}-${sls:stage}
+  events:
+    - http:
+        method: POST
+        path: /registration/add
+        cors:
+          origins: "*"
+          headers:
+            - Content-Type
+            - X-Amz-Date
+            - X-Api-Key
+            - X-Amz-Security-Token
+            - X-Amz-User-Agent
+          allowCredentials: false
